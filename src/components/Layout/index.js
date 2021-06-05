@@ -1,8 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import Head from 'next/head';
-import TopBar from './TopBar';
-import NavBar from './NavBar';
+import TopBar from '@src/components/Layout/TopBar';
+import NavBar from '@src/components/Layout/NavBar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
