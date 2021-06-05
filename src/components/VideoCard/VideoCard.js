@@ -53,7 +53,7 @@ export default function VideoCard({ item }) {
             {item.authorName}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            {`${item.views} + ${dayjs(item.updateAt).fromNow()}`}
+            {`${item.views} • ${dayjs(item.updateAt).fromNow()}`}
           </Typography>
         </Box>
       </Box>
