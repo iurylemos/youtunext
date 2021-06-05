@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 
 const URI = process.env.MONGODB_URI;
-const dbName = process.env.MONDGO_DB;
+const dbName = process.env.MONGO_DB;
 
 let cacheDb;
 let cacheClient;
@@ -20,7 +20,7 @@ if (!dbName) {
 
 export default async function connectDatabase() {
   if (cacheDb && cacheClient) {
-    return { cleint: cacheClient, db: cacheDb };
+    return { client: cacheClient, db: cacheDb };
   }
 
   const client = await MongoClient.connect(URI, {

@@ -1,17 +1,51 @@
-export default function handlerVideo(req, res) {
-  const { method } = req;
-  switch (method) {
-    case 'GET':
-      // Get data from your database
-      res.status(200).json({ method });
-      break;
-    case 'POST':
-      // received image by request and another data of endpoint
-      // insert in database
-      res.status(200).json({ method });
-      break;
-    default:
-      res.setHeader('Allow', ['GET', 'PUT']);
-      res.status(405).end(`Method ${method} Not Allowed`);
-  }
+import connectDatabase from '@src/utils/mongodb';
+import upload from '@src/utils/upload';
+import nc from 'next-connect';
+import { ObjectId } from 'mongodb';
+
+function onError(err, req, res, next) {
+  // eslint-disable-next-line no-console
+  console.log(err);
+
+  res.status(500).end(err.toString());
+  // OR: you may want to continue
+  next();
 }
+
+const handler = nc({ onError })
+  .use(upload.single('file'))
+  .post(async (req, res) => {
+    try {
+      const { title, authorId, authorName, authorAvatar, videoUrl } = req.body;
+      const { db } = await connectDatabase();
+
+      const collection = db.collection('videos');
+
+      await collection.insertOne({
+        title,
+        authorId: ObjectId(authorId),
+        authorName,
+        authorAvatar,
+        views: 0,
+        thumb: req.file.location,
+        videoUrl,
+        updatedAt: new Date(),
+      });
+
+      res.status(200).json({ ok: true });
+      return;
+    } catch (error) {
+      throw new Error(error);
+    }
+  })
+  .get((req, res) => {
+    res.send('Hello world');
+  });
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+export default handler;
