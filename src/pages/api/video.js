@@ -2,6 +2,9 @@ import connectDatabase from '@src/utils/mongodb';
 import upload from '@src/utils/upload';
 import nc from 'next-connect';
 import { ObjectId } from 'mongodb';
+import jwt from 'next-auth/jwt';
+
+const secret = process.env.JWT_SECRET;
 
 function onError(err, req, res, next) {
   // eslint-disable-next-line no-console
@@ -17,22 +20,29 @@ const handler = nc({ onError })
   .post(async (req, res) => {
     try {
       const { title, authorId, authorName, authorAvatar, videoUrl } = req.body;
-      const { db } = await connectDatabase();
 
-      const collection = db.collection('videos');
+      const token = await jwt.getToken({ req, secret });
 
-      await collection.insertOne({
-        title,
-        authorId: ObjectId(authorId),
-        authorName,
-        authorAvatar,
-        views: 0,
-        thumb: req.file.location,
-        videoUrl,
-        updatedAt: new Date(),
-      });
+      if (token) {
+        const { db } = await connectDatabase();
+        const collection = db.collection('videos');
 
-      res.status(200).json({ ok: true });
+        await collection.insertOne({
+          title,
+          authorId: ObjectId(authorId),
+          authorName,
+          authorAvatar,
+          views: 0,
+          thumb: req.file.location,
+          videoUrl,
+          updatedAt: new Date(),
+        });
+
+        res.status(200).json({ ok: true });
+        return;
+      }
+
+      res.status(401).end();
       return;
     } catch (error) {
       throw new Error(error);
