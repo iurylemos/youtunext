@@ -27,6 +27,10 @@ export async function getStaticProps() {
     props: {
       data: JSON.parse(JSON.stringify(data)),
     }, // will be passed to the page component as props
+    // Next.js will attempt to re-generate the page:
+    // - When a request comes in
+    // - At most once every 15 seconds
+    revalidate: 15,
   };
 }
 
