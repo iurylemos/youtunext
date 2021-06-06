@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { Avatar, Box, Typography, makeStyles } from '@material-ui/core';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useRouter } from 'next/router';
+import Imagem from 'next/image';
 
 dayjs.extend(relativeTime);
 
@@ -31,11 +32,12 @@ export default function VideoCard({ item }) {
 
   return (
     <Box>
-      <Avatar
+      <Imagem
         alt={item.title}
         src={item.thumb}
-        variant="square"
-        className={classes.img}
+        width={230}
+        height={150}
+        layout="fixed"
         onClick={() => {
           router.push({
             pathname: '/video/[id]',
