@@ -18,8 +18,12 @@ import {
   Apps,
   Notifications,
   AccountCircle,
+  Brightness7,
+  Brightness4,
 } from '@material-ui/icons';
 import { signIn, signOut, useSession } from 'next-auth/client';
+import useSettings from '@src/hooks/useSettings';
+import THEMES from '@src/utils/constants';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +37,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  logo: {
+  logoDark: {
+    cursor: 'pointer',
+    height: 20,
+    marginLeft: theme.spacing(2),
+    filter: 'brightness(6) sepia(0) hue-rotate(180deg) saturate(5)',
+  },
+  logoLight: {
     cursor: 'pointer',
     height: 20,
     marginLeft: theme.spacing(2),
@@ -50,13 +60,22 @@ const useStyles = makeStyles((theme) => ({
 function TopBar() {
   const classes = useStyles();
   const [session] = useSession();
+  const { settings, saveSettings } = useSettings();
 
   return (
     <AppBar className={classes.root} color="default">
       <Toolbar className={classes.toolbar}>
         <Box alignItems="center">
           <Menu />
-          <img src="/logo-youtube.svg" alt="logo" className={classes.logo} />
+          <img
+            src="/logo-youtube.svg"
+            alt="logo"
+            className={
+              settings.theme === THEMES.DARK
+                ? classes.logoDark
+                : classes.logoLight
+            }
+          />
         </Box>
         <Hidden mdDown>
           <Box alignItems="center">
@@ -78,6 +97,17 @@ function TopBar() {
           </Box>
         </Hidden>
         <Box display="flex">
+          <IconButton>
+            {settings.theme === THEMES.DARK ? (
+              <Brightness7
+                onClick={() => saveSettings({ theme: THEMES.LIGHT })}
+              />
+            ) : (
+              <Brightness4
+                onClick={() => saveSettings({ theme: THEMES.DARK })}
+              />
+            )}
+          </IconButton>
           <IconButton>
             <Apps />
           </IconButton>

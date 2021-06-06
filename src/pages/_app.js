@@ -1,12 +1,13 @@
 import React from 'react';
 import Head from 'next/head';
-import { ThemeProvider } from '@material-ui/core/styles';
+// import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import theme from '@src/theme';
 import { Provider } from 'next-auth/client';
 import 'nprogress/nprogress.css';
 import { Router } from 'next/router';
 import nProgress from 'nprogress';
+import MyThemeProvider from '@src/components/MyThemeProvider';
+import { SettingsProvider } from '@src/contexts/settingsContext';
 
 nProgress.configure({
   showSpinner: false,
@@ -47,11 +48,13 @@ export default function MyApp(props) {
         />
       </Head>
       <Provider session={pageProps.session}>
-        <ThemeProvider theme={theme}>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
+        <SettingsProvider>
+          <MyThemeProvider>
+            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+            <CssBaseline />
+            <Component {...pageProps} />
+          </MyThemeProvider>
+        </SettingsProvider>
       </Provider>
       <style global jsx>
         {`

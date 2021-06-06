@@ -181,7 +181,7 @@ function NavBar() {
   );
 
   return (
-    <Hidden>
+    <Hidden mdDown>
       <Drawer
         anchor="left"
         classes={{ paper: classes.desktopDrawer }}
